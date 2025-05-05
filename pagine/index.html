@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatore</title>
+    <script>
+        async function recuperaDati(operazione) {
+            try {
+                const response = await fetch('/api/contatore/' + operazione, {
+                    method: 'POST'
+                });
+                const contatore = await response.json();
+                document.getElementById("contatore").innerHTML = contatore.valore;
+            } catch (error) {
+                console.error('Errore durante il recupero dei dati:', error);
+            }
+        }
+
+        async function caricaContatore() {
+            try {
+                const response = await fetch('/api/contatore');
+                const contatore = await response.json();
+                document.getElementById("contatore").innerHTML = contatore.valore;
+            } catch (error) {
+                console.error('Errore durante il caricamento del contatore:', error);
+            }
+        }
+
+        window.onload = caricaContatore;
+    </script>
+</head>
+<body>
+    <button onclick="recuperaDati('aumenta')">Aumenta</button>
+    <span id="contatore"></span>
+    <button onclick="recuperaDati('diminuisci')">Diminuisci</button>
+</body>
+</html>
