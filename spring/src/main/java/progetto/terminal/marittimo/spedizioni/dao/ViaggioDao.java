@@ -15,9 +15,9 @@ import java.util.List;
 @Repository
 public class ViaggioDao {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/tuo_database";
-    private static final String USER = "tuo_username";
-    private static final String PASSWORD = "tuo_password";
+    private static final String URL = "jdbc:mysql://localhost:3306/spedizioni";
+    private static final String USER = "localhost";
+    private static final String PASSWORD = "";
 
     public List<Viaggio> getViaggiByNaveId(int naveId) {
         List<Viaggio> viaggi = new ArrayList<>();
