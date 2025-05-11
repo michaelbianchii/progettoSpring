@@ -1,27 +1,17 @@
 package progetto.terminal.marittimo.spedizioni.model;
 
 public class Nave {
-    private int id;
-    private String nome;
+    private String nome_nave;
 
-    public Nave(int id, String nome) {
-        this.id = id;
-        this.nome = nome;
+    public Nave(String nome_nave) {
+        this.nome_nave = nome_nave;
     }
 
-    public int getId() {
-        return id;
+    public String getNome_nave() {
+        return nome_nave;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNome_nave(String nome_nave) {
+        this.nome_nave = nome_nave;
     }
 }

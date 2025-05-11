@@ -17,12 +17,16 @@ public class BuonoConsegnaController {
     @Autowired
     private BuonoConsegnaDao buonoConsegnaDao;
 
+    
+    //http://localhost:8080/api/buoni/polizza/{polizzaId}
     @GetMapping("/polizza/{polizzaId}")
+    @ResponseBody
     public List<BuonoConsegna> getBuoniByPolizzaId(@PathVariable int polizzaId) {
         return buonoConsegnaDao.getBuoniByPolizzaId(polizzaId);
     }
 
     @PostMapping
+    @ResponseBody
     public String inserisciBuonoConsegna(@RequestParam int polizzaId, @RequestParam double peso,
                                          @RequestParam String cliente) {
         return buonoConsegnaDao.inserisciBuonoConsegna(polizzaId, peso, cliente);

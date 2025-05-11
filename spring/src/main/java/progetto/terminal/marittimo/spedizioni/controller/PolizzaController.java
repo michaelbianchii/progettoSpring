@@ -8,21 +8,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/polizze")
+@RequestMapping("/polizze")
 public class PolizzaController {
 
     @Autowired
     private PolizzaDao polizzaDao;
 
-    @GetMapping("/viaggio/{viaggioId}")
-    public List<Polizza> getPolizzeByViaggioId(@PathVariable int viaggioId) {
-        return polizzaDao.getPolizzeByViaggioId(viaggioId);
+    // http://localhost:8080/polizze/getPolizzaByCliente?clienteId=1
+    @GetMapping("/getPolizzaByCliente")
+    @ResponseBody
+    public List<Polizza> getPolizzeByClienteId(@RequestParam int clienteId) {
+        return polizzaDao.getPolizzeByClienteId(clienteId);
     }
 
-    @PostMapping
+    /*@PostMapping
     public String inserisciPolizza(@RequestParam int viaggioId, @RequestParam String portoCarico,
                                    @RequestParam String portoDestinazione, @RequestParam String tipologiaMerce,
                                    @RequestParam double peso, @RequestParam String fornitore) {
         return polizzaDao.inserisciPolizza(viaggioId, portoCarico, portoDestinazione, tipologiaMerce, peso, fornitore);
-    }
+    }*/
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente - Terminal Marittimo</title>
+    <script src="js/functions.js"></script> 
+    <script src="js/classes/Utente.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+
+    <div id="navbar">
+        <!-- nome utente e il logout -->
+        <span id="usernameDisplay"></span>
+        <button id="logoutButton">Logout</button>
+    </div>
+
+    <div class="container mt-4">
+        <h2>Benvenuto, <span id="clientName"></span>!</h2>
+        <p>Qui puoi consultare le tue polizze, buoni di consegna e storico ritiri.</p>
+
+        <div class="section" id="polizzeSection">
+            <h3>Le tue polizze</h3>
+            <table id="polizzeTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Polizza</th>
+                        <th>Porto di carico</th>
+                        <th>Porto di destinazione</th>
+                        <th>Tipologia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--i dati delle polizze verranno popolati dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section" id="buoniSection">
+            <h3>Buoni di consegna</h3>
+            <table id="buoniTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Buono</th>
+                        <th>Merce</th>
+                        <th>Data Emissione</th>
+                        <th>Data Scadenza</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--i dati dei buoni di consegna verranno popolati dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section" id="storicoRitiriSection">
+            <h3>Storico Ritiri</h3>
+            <table id="ritiriTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Ritiro</th>
+                        <th>Data Ritiro</th>
+                        <th>Peso Ritirato</th>
+                        <th>Targa Camion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- i dati dei ritiri verranno popolati dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        
+    </script>
+</body>
+</html>

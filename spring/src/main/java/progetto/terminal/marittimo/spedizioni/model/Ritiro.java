@@ -2,6 +2,7 @@ package progetto.terminal.marittimo.spedizioni.model;
 
 import java.util.Date;
 
+//da aggiungere in db
 public class Ritiro {
     private int id;
     private String cliente;

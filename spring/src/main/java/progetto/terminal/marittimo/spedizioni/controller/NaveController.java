@@ -8,18 +8,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/navi")
+@RequestMapping(path= "/api/navi")
 public class NaveController {
 
     @Autowired
     private NaveDao naveDao;
 
-    @GetMapping
+    // http://localhost:8080/api/navi/getAll
+    @GetMapping("/getAll")
+    @ResponseBody
     public List<Nave> getAllNavi() {
         return naveDao.getAllNavi();
     }
 
-    @PostMapping
+
+    // http://localhost:8080/api/navi/addNave?nome=nomeNave
+    @PostMapping("/addNave")
+    @ResponseBody
     public String inserisciNave(@RequestParam String nome) {
         return naveDao.inserisciNave(nome);
     }

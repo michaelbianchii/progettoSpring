@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mag 04, 2025 alle 13:29
+-- Creato il: Mag 11, 2025 alle 19:25
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.0.30
 
@@ -192,6 +192,30 @@ INSERT INTO `porto` (`nome_porto`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `utente`
+--
+
+CREATE TABLE `utente` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `ruolo` enum('admin','autotrasportatore','cliente','fornitore') NOT NULL DEFAULT 'cliente'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `utente`
+--
+
+INSERT INTO `utente` (`id`, `username`, `password`, `ruolo`) VALUES
+(1, 'admin', 'admin123', 'admin'),
+(2, 'giovanni', 'trasporto456', 'autotrasportatore'),
+(3, 'lucia', 'ciao123', 'cliente'),
+(4, 'a', 'a', 'cliente'),
+(6, 'z', 'z', 'cliente');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `viaggio`
 --
 
@@ -274,6 +298,13 @@ ALTER TABLE `porto`
   ADD PRIMARY KEY (`nome_porto`);
 
 --
+-- Indici per le tabelle `utente`
+--
+ALTER TABLE `utente`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
 -- Indici per le tabelle `viaggio`
 --
 ALTER TABLE `viaggio`
@@ -309,6 +340,12 @@ ALTER TABLE `fornitore`
 --
 ALTER TABLE `polizze_di_carico`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT per la tabella `utente`
+--
+ALTER TABLE `utente`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `viaggio`

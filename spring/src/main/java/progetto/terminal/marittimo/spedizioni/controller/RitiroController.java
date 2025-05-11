@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ritiri")
+@RequestMapping("/ritiri")
 public class RitiroController {
 
     @Autowired

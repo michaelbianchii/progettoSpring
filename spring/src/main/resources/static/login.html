@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/function.js"></script>
+    <script src="js/classes/Utente.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script>
+        async function doLogin() {
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            let risposta = await loginCliente(username, password);
+
+            if(risposta["esito"] === "ok") {
+                //prendo anche il ruolo dell'utente 
+                let ruolo = risposta["ruolo"];
+                //prendo l'id dell'utente
+                let id = risposta["id"];
+
+                let utente = new Utente(id, username, password, ruolo);
+                sessionStorage.setItem("utente", JSON.stringify(utente));
+
+                //reindirizzo alla pagina dedicata
+                window.location.href = ruolo + ".html";
+            } else {
+                alert("Login fallito");
+            }
+        }
+    </script>
+</head>
+<body class="bg-light">
+    
+    <h2 class="mb-0">Accesso al sistema</h2>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button onclick="doLogin()" class="btn btn-primary w-100">Accedi</button>
+
+    <div class="mb-3">
+        sei un nuovo utente? <a href="registrazione.html">Registrati</a>
+    </div>
+</body>
+</html>

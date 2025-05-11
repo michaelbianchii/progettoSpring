@@ -59,4 +59,28 @@ public class PolizzaDao {
             return "errore";
         }
     }
+
+    public List<Polizza> getPolizzeByClienteId(int clienteId) {
+        List<Polizza> polizze = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            String sql = "SELECT * FROM polizza WHERE cliente_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, clienteId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Polizza polizza = new Polizza(
+                    rs.getInt("id"),
+                    rs.getString("porto_carico"),
+                    rs.getString("porto_destinazione"),
+                    rs.getString("tipologia_merce"),
+                    rs.getDouble("peso"),
+                    rs.getString("fornitore")
+                );
+                polizze.add(polizza);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return polizze;
+    }
 }
