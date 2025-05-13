@@ -47,13 +47,13 @@ async function getId(username, password) {
     }
 }
 
-async function registraUtente(username, password) {
+async function registraUtente(username, password, ruolo) {
     // funzione per la registrazione dell'utente
     // fa md5 della password (manca)
     // chiama il servizio di registrazione dell'utente
     // se la registrazione va a buon fine, salva l'utente in sessionStorage
 
-    let url = "http://localhost:8080/utente/doRegistrazione?username="+username+"&password="+password;
+    let url = "http://localhost:8080/utente/doRegistrazione?username="+username+"&password="+password+"&ruolo="+ruolo;
    try {
         let response = await fetch(url);
         let data = await response.json();
@@ -115,4 +115,18 @@ function getStoricoRitiri(clienteId) {
         .catch(error => {
             console.error('Errore nel recupero dello storico ritiri:', error);
         });
+}
+
+async function getUtenti(){
+    // http://localhost:8080/utente/getUtenti
+    let url = "http://localhost:8080/utente/getUtenti";
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        return data;
+    } catch (error) {
+        console.log("Errore nella fetch:", error);
+        return "errore";
+    }
 }

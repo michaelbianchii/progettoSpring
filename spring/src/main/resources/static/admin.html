@@ -4,6 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="js/function.js"></script>
+    <script src="js/classes/Utente.js"></script>
+    <script>
+        // prendo l'utente salvato in localStorage (è una stringa JSON)
+        let utenteJSON = localStorage.getItem("utente");
+    
+        // controllo se non esiste o è vuoto
+        if (!utenteJSON) {
+            localStorage.setItem("errore", "non sei autenticato");
+            window.location.href = "login.html";
+        } else {
+            try {
+                // provo a trasformarlo in oggetto
+                let utente = JSON.parse(utenteJSON);
+    
+                // controllo che esista e abbia il ruolo corretto
+                if (!utente || utente.ruolo !== "admin") {
+                    localStorage.setItem("errore", "non hai il permesso per accedere alla pagina");
+                    window.location.href = "login.html";
+                }
+            } catch (e) {
+                // errore nel parsing
+                localStorage.setItem("errore", "errore nell'autenticazione");
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+    
+    
 </head>
 <body>
     <h1>Benvenuto Admin</h1>
@@ -13,6 +42,6 @@
     <a href="gestionePorti.html">Porti</a>
     <a href="gestionePolizze.html">Polizze</a>
     <a href="gestioneBuoni.html">Buoni di Consegna</a>
-    <a href="gestioneBuoni.html">Buoni di Consegna</a>
+    <a href="gestioneUtenti.html">Gestisci gli utenti</a>
 </body>
 </html>

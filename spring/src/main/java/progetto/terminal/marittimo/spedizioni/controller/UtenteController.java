@@ -1,9 +1,16 @@
 package progetto.terminal.marittimo.spedizioni.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import progetto.terminal.marittimo.spedizioni.dao.UtenteDao;
+import progetto.terminal.marittimo.spedizioni.model.Utente;
 
 
 @RestController
@@ -22,11 +29,18 @@ public class UtenteController {
         return utenteDao.doLogin(username, password);
     }
 
-    // http://localhost:8080/utente/doRegistrazione?username=user&password=user
+    // http://localhost:8080/utente/doRegistrazione?username=user&password=user&ruolo=admin
     // torna esito: ok se lo inserisce correttamente
     @GetMapping("/doRegistrazione")
     public String doRegistrazione(@RequestParam String username, @RequestParam String password) {
         return utenteDao.doRegistrazione(username, password);
+    }
+
+    // http://localhost:8080/utente/getUtenti
+    // torna utenti json 
+    @GetMapping("/getUtenti")
+    public List<Utente> getUtenti() {
+        return utenteDao.getUtenti();
     }
 
 }

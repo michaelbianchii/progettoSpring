@@ -9,6 +9,16 @@
     <script src="js/classes/Utente.js"></script>
     <link rel="stylesheet" href="css/bootstrap.css">
     <script>
+        function mostraErrori() {
+            let errore = localStorage.getItem("errore");
+            localStorage.removeItem("errore");
+        
+            if (errore) {
+                document.getElementById("errore").textContent = errore;
+            }
+        }
+        
+
         async function doLogin() {
             let username = document.getElementById("username").value;
             let password = document.getElementById("password").value;
@@ -22,7 +32,7 @@
                 let id = risposta["id"];
 
                 let utente = new Utente(id, username, password, ruolo);
-                sessionStorage.setItem("utente", JSON.stringify(utente));
+                localStorage.setItem("utente", JSON.stringify(utente));
 
                 //reindirizzo alla pagina dedicata
                 window.location.href = ruolo + ".html";
@@ -32,9 +42,12 @@
         }
     </script>
 </head>
-<body class="bg-light">
+<body class="bg-light" onload="mostraErrori()">
     
     <h2 class="mb-0">Accesso al sistema</h2>
+    <div>
+        <label id="errore" class="form-label"></label>
+    </div>
     <div class="mb-3">
         <label for="username" class="form-label">Username</label>
         <input type="text" class="form-control" id="username" name="username" required>
