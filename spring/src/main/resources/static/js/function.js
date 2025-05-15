@@ -130,3 +130,54 @@ async function getUtenti(){
         return "errore";
     }
 }
+
+function controllaUtente(ruolo){
+    // prendo l'utente salvato in localStorage (è una stringa JSON)
+    let utenteJSON = localStorage.getItem("utente");
+
+    // controllo se non esiste o è vuoto
+    if (!utenteJSON) {
+        localStorage.setItem("errore", "non sei autenticato");
+        window.location.href = "login.html";
+    } else {
+        try {
+            // provo a trasformarlo in oggetto
+            let utente = JSON.parse(utenteJSON);
+            // controllo che esista e abbia il ruolo corretto
+            if (!utente || utente.ruolo !== ruolo) {
+                localStorage.setItem("errore", "non hai il permesso per accedere alla pagina");
+                window.location.href = "login.html";
+            }
+        } catch (e) {
+            // errore nel parsing
+            localStorage.setItem("errore", "errore nell'autenticazione");
+            window.location.href = "login.html";
+        }
+    }
+}
+
+async function addNave(nome_nave){
+    let url = "http://localhost:8080/navi/addNave?nome_nave="+nome_nave;
+   try {
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        return data;
+    } catch (error) {
+        console.log("Errore nella fetch:", error);
+        return "errore";
+    }
+}
+
+async function addPorto(nome_porto, nazione, linea){
+    let url = "http://localhost:8080/porti/addPorto?nome_porto="+nome_porto+"&nazione="+nazione+"&linea="+linea;
+   try {
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        return data;
+    } catch (error) {
+        console.log("Errore nella fetch:", error);
+        return "errore";
+    }
+}

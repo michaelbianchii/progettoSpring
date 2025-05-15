@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cliente - Terminal Marittimo</title>
+    <script src="js/functions.js"></script> 
+    <script src="js/classes/Utente.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+</head>
+<body onload="controllaUtente('fornitore')" class="bg-light text-dark">
+
+    <nav class="d-flex justify-content-end align-items-center p-3 border-bottom bg-white">
+        <span id="usernameDisplay" class="me-3 fw-bold"></span>
+    </nav>
+
+    <main class="container py-4">
+        <h1 class="mb-3">Benvenuto Fornitore</h1>
+        <h2 class="mb-3">Pagine:</h2>
+        <div class="d-flex flex-column gap-2">
+            <a href="visualizza/visualizzaPolizzeFornitore.html" class="btn btn-primary btn-sm text-start">Polizze che mi riguardano</a>
+            <a href="monitoraggioRitiriFornitore.html" class="btn btn-primary btn-sm text-start">Monitoraggio ritiri del fornitore</a>
+            <a href="logout.html" class="btn btn-secondary btn-sm text-start">Logout</a>
+        </div>
+    </main>
+
+</body>
+</html>

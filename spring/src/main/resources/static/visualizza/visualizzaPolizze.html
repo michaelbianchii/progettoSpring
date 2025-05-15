@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizza Polizze</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <script>
+        async function getPolizze() {
+            try {
+                const response = await fetch("http://localhost:8080/polizze/getAllPolizze");
+                return await response.json();
+            } catch (error) {
+                console.error("Errore nel recupero polizze:", error);
+                return [];
+            }
+        }
+
+        async function caricaPolizze() {
+            const polizze = await getPolizze();
+            const container = document.getElementById("listaPolizze");
+            container.innerHTML = "";
+
+            if (polizze.length === 0) {
+                container.innerHTML = "<div class='alert alert-warning'>Nessuna polizza trovata.</div>";
+                return;
+            }
+
+            polizze.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "card mb-3 shadow-sm";
+
+                const cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+
+                cardBody.innerHTML = `
+                    <h5 class="card-title">Polizza ID: ${p.id}</h5>
+                    <p class="card-text"><strong>Porto Carico:</strong> ${p.porto_carico}</p>
+                    <p class="card-text"><strong>Porto Destinazione:</strong> ${p.porto_destinazione}</p>
+                    <p class="card-text"><strong>Tipologia Merce:</strong> ${p.tipologia_merce}</p>
+                    <p class="card-text"><strong>Peso:</strong> ${p.peso} kg</p>
+                    <p class="card-text"><strong>ID Fornitore:</strong> ${p.id_fornitore}</p>
+                    <p class="card-text"><strong>ID Viaggio:</strong> ${p.id_viaggio}</p>
+                    <p class="card-text"><strong>Giorni Franchigia:</strong> ${p.giorni_franchigia}</p>
+                    <p class="card-text"><strong>Tariffa oltre Franchigia:</strong> €${p.tariffa_oltre_franchigia.toFixed(2)}</p>
+                    <p class="card-text"><strong>ID Cliente:</strong> ${p.id_cliente}</p>
+                `;
+
+                card.appendChild(cardBody);
+                container.appendChild(card);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaPolizze()" class="bg-light">
+    <div class="container py-4">
+        <h2 class="mb-4">Lista Polizze</h2>
+        <div id="listaPolizze"></div>
+        <a href="../admin.html" class="btn btn-secondary mt-4">Torna alla Dashboard</a>
+    </div>
+    <div class="container py-4">
+        <a href="../aggiungi/aggiungiPolizza.html" class="btn btn-secondary mt-4">aggiungi polizza</a>
+    </div>
+</body>
+</html>

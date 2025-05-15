@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fornitore - Monitoraggio Ritiri</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script>
+        async function getRitiriFornitore() {
+            const utente = JSON.parse(localStorage.getItem("utente"));
+            if (!utente || utente.ruolo !== "fornitore") {
+                alert("Accesso non autorizzato");
+                window.location.href = "login.html";
+                return [];
+            }
+
+            const url = "http://localhost:8080/ritiri/byFornitore?id=" + utente.id;
+            try {
+                const response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.log("Errore nella fetch dei ritiri:", error);
+                return [];
+            }
+        }
+
+        async function caricaRitiri() {
+            const ritiri = await getRitiriFornitore();
+            const container = document.getElementById("listaRitiri");
+            container.innerHTML = "";
+
+            if (ritiri.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">Nessun ritiro trovato.</div>`;
+                return;
+            }
+
+            ritiri.forEach(r => {
+                const div = document.createElement("div");
+                div.className = "card mb-2 shadow-sm";
+                div.innerHTML = `
+                    <div class="card-body p-2">
+                        <strong>Ritiro ID:</strong> ${r.id} &nbsp;|&nbsp;
+                        <strong>Polizza ID:</strong> ${r.id_polizza} &nbsp;|&nbsp;
+                        <strong>Peso:</strong> ${r.peso} kg &nbsp;|&nbsp;
+                        <strong>Autista ID:</strong> ${r.id_autista} &nbsp;|&nbsp;
+                        <strong>Data Ritiro:</strong> ${r.data_ritiro}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaRitiri()" class="bg-light text-dark">
+
+    <div class="container py-4">
+        <h1 class="mb-3 text-primary">Monitoraggio Ritiri</h1>
+        <h2 class="mb-3">Ritiri delle tue Polizze</h2>
+        <div id="listaRitiri" class="mb-4"></div>
+        <a href="fornitore.html" class="btn btn-outline-primary">Indietro</a>
+    </div>
+
+</body>
+</html>

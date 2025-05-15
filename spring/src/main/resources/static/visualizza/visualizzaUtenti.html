@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin - Gestione Utenti</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+    async function getUtenti() {
+        let url = "http://localhost:8080/utente/getUtenti";
+        try {
+            let response = await fetch(url);
+            return await response.json();
+        } catch (error) {
+            console.log("Errore nella fetch:", error);
+            return [];
+        }
+    }
+
+    async function caricaUtenti() {
+        const utenti = await getUtenti();
+        const container = document.getElementById("listaUtenti");
+        container.innerHTML = "";
+
+        if(utenti.length === 0){
+            container.innerHTML = `<div class="alert alert-warning">Nessun utente trovato.</div>`;
+            return;
+        }
+
+        utenti.forEach(u => {
+            const div = document.createElement("div");
+            div.className = "card mb-2 p-3 shadow-sm";
+            div.textContent = `ID: ${u.id}, Username: ${u.username}, Ruolo: ${u.ruolo}`;
+            container.appendChild(div);
+        });
+    }
+    </script>
+</head>
+<body onload="caricaUtenti()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Gestione Utenti - Admin</h1>
+
+        <h2 class="mb-3">Lista Utenti</h2>
+        <div id="listaUtenti" class="mb-4"></div>
+
+        <h2 class="mb-3">Aggiungi Utente</h2>
+        <a href="../aggiungi/aggiungiUtente.html" class="btn btn-primary mb-4">Aggiungi un nuovo utente</a>
+
+        <br>
+        <a href="../admin.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>

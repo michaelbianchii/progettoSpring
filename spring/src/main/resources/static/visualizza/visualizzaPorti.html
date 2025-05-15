@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Gestione Porti</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+    async function getPorti() {
+        let url = "http://localhost:8080/porti/getPorti";
+        try {
+            let response = await fetch(url);
+            return await response.json();
+        } catch (error) {
+            console.log("Errore nella fetch:", error);
+            return [];
+        }
+    }
+
+    async function caricaPorti() {
+        const porti = await getPorti();
+        const container = document.getElementById("listaPorti");
+        container.innerHTML = ""; // pulisce
+
+        if (porti.length === 0) {
+            container.innerHTML = `<div class="alert alert-warning">Nessun porto trovato.</div>`;
+            return;
+        }
+
+        porti.forEach(p => {
+            const div = document.createElement("div");
+            div.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-2", "p-3", "bg-white", "shadow-sm", "rounded");
+
+            // Testo con le info del porto
+            const info = document.createElement("span");
+            info.textContent = `Nome porto: ${p.nome_porto}, Nazione: ${p.nazione}, Linea: ${p.linea}`;
+
+            // Bottone per eliminare il porto
+            const button = document.createElement("button");
+            button.textContent = "Elimina";
+            button.classList.add("btn", "btn-danger", "btn-sm");
+            button.onclick = () => eliminaPorto(p.nome_porto);
+
+            div.appendChild(info);
+            div.appendChild(button);
+
+            container.appendChild(div);
+        });
+    }
+
+    async function eliminaPorto(nome_porto) {
+        let url = "http://localhost:8080/porti/eliminaPorto?nome_porto=" + encodeURIComponent(nome_porto);
+        try {
+            let response = await fetch(url); // default GET
+            if (response.ok) {
+                const data = await response.json();
+                if (data.esito === "ok") {
+                    alert("Porto eliminato con successo");
+                    caricaPorti();
+                } else {
+                    alert("Errore eliminazione: " + data.esito);
+                }
+            } else {
+                alert("Errore HTTP");
+            }
+        } catch (error) {
+            console.log("Errore nella fetch:", error);
+        }
+    }
+    </script>
+</head>
+<body onload="caricaPorti()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Gestione PORTI - Admin</h1>
+
+        <h2 class="mb-3">Lista PORTI</h2>
+        <div id="listaPorti" class="mb-4"></div>
+
+        <h2 class="mb-3">Aggiungi Porto</h2>
+        <a href="../aggiungi/aggiungiPorto.html" class="btn btn-primary mb-4">Aggiungi un nuovo porto</a>
+
+        <br>
+        <a href="../admin.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>

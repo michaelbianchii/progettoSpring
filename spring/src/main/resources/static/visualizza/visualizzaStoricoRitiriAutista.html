@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Autista - Visualizzazione Storico Ritiri</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        async function getRitiriAutista() {
+            let utente = JSON.parse(localStorage.getItem("utente"));
+            if (!utente || !utente.id) {
+                alert("Utente non autenticato.");
+                window.location.href = "login.html";
+                return [];
+            }
+
+            let id = utente.id;
+            let url = "http://localhost:8080/ritiri/getRitiriByAutistaId?autistaId=" + id;
+
+            try {
+                let response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.log("Errore nella fetch:", error);
+                return [];
+            }
+        }
+
+        async function caricaRitiri() {
+            const ritiri = await getRitiriAutista();
+            const container = document.getElementById("listaRitiri");
+            container.innerHTML = "";
+
+            if (ritiri.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">Nessun ritiro disponibile.</div>`;
+                return;
+            }
+
+            ritiri.forEach(r => {
+                const div = document.createElement("div");
+                div.className = "card mb-2 p-3 shadow-sm";
+                div.textContent = `Data: ${new Date(r.data_ritiro).toLocaleDateString()} | Peso: ${r.peso_ritirato} kg | Camion: ${r.camion_utilizzato} | Conducente: ${r.conducente}`;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaRitiri()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Storico Ritiri Autista</h1>
+
+        <h2 class="mb-3">Lista Ritiri</h2>
+        <div id="listaRitiri" class="mb-4"></div>
+
+        <a href="../autista.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>
+

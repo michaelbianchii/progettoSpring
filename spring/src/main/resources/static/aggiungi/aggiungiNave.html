@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/function.js"></script>
+    <script src="../js/classes/Utente.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <script>
+        async function inserisciNave() {
+            let nome_nave = document.getElementById("nome_nave").value;
+            
+            let risposta = await addNave(nome_nave);
+
+            if(risposta["esito"] === "ok") {
+                alert("aggiunta nave fatta con successo");
+                window.location.href = "../visualizza/visualizzaNavi.html";
+            } else {
+                alert("aggiunta fallita");
+            }
+        }
+    </script>
+</head>
+<body class="bg-light">
+    
+    <h2 class="mb-0">AGGIUNGI NAVE</h2>
+    <div class="mb-3">
+        <label for="nome_nave" class="form-label">nome nave</label>
+        <input type="text" class="form-control" id="nome_nave" name="nome_nave" required>
+    </div>
+    <button onclick="inserisciNave()" class="btn btn-primary w-100">Aggiungi</button>
+
+    <div class="mb-3">
+        <a href="../visualizza/visualizzaNavi.html">indietro</a>
+    </div>
+</body>
+</html>

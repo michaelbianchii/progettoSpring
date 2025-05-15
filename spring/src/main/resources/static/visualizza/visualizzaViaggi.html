@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visualizza Viaggi</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        // Funzione per formattare la data in formato italiano (gg/mm/aaaa)
+        function formatDate(dateString) {
+            if (!dateString) return "";
+            const date = new Date(dateString);
+            if (isNaN(date)) return dateString; // fallback se non valido
+            return date.toLocaleDateString('it-IT');
+        }
+
+        async function getViaggi() {
+            try {
+                const response = await fetch("http://localhost:8080/viaggi/getAll");
+                return await response.json();
+            } catch (error) {
+                console.error("Errore nel recupero viaggi:", error);
+                return [];
+            }
+        }
+
+        async function caricaViaggi() {
+            const viaggi = await getViaggi();
+            const container = document.getElementById("listaViaggi");
+            container.innerHTML = "";
+
+            if (viaggi.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning" role="alert">Nessun viaggio trovato.</div>`;
+                return;
+            }
+
+            viaggi.forEach(v => {
+                const card = document.createElement("div");
+                card.className = "card mb-3 shadow-sm";
+
+                const cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+
+                cardBody.innerHTML = `
+                    <h5 class="card-title">Viaggio ID: ${v.id}</h5>
+                    <p class="card-text"><strong>Nave:</strong> ${v.nome_nave}</p>
+                    <p class="card-text"><strong>Partenza:</strong> ${v.porto_partenza} - ${formatDate(v.data_partenza)}</p>
+                    <p class="card-text"><strong>Arrivo:</strong> ${v.porto_arrivo} - ${formatDate(v.data_arrivo)}</p>
+                `;
+
+                card.appendChild(cardBody);
+                container.appendChild(card);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaViaggi()" class="bg-light">
+    <div class="container py-4">
+        <h2 class="mb-4">Lista Viaggi</h2>
+        <div id="listaViaggi"></div>
+        <a href="../admin.html" class="btn btn-secondary mt-4">Torna alla Dashboard</a>
+    </div>
+    <div class="container py-4">
+        <a href="../aggiungi/aggiungiViaggio.html" class="btn btn-secondary mt-4">AGGIUNGI VIAGGIO</a>
+    </div>
+</body>
+</html>
+

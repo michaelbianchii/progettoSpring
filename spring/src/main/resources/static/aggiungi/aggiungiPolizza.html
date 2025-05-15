@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Aggiungi Polizza</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        async function caricaPorti() {
+            try {
+                const response = await fetch("http://localhost:8080/porti/getPorti");
+                const porti = await response.json();
+
+                const selectCarico = document.getElementById("porto_carico");
+                const selectDestinazione = document.getElementById("porto_destinazione");
+
+                porti.forEach(p => {
+                    const optionCarico = document.createElement("option");
+                    optionCarico.value = p.nome_porto;
+                    optionCarico.textContent = p.nome_porto;
+                    selectCarico.appendChild(optionCarico);
+
+                    const optionDestinazione = document.createElement("option");
+                    optionDestinazione.value = p.nome_porto;
+                    optionDestinazione.textContent = p.nome_porto;
+                    selectDestinazione.appendChild(optionDestinazione);
+                });
+            } catch (error) {
+                console.error("Errore nel caricamento porti:", error);
+            }
+        }
+
+        async function submitPolizza(event) {
+            event.preventDefault();
+
+            const polizza = {
+                porto_carico: document.getElementById("porto_carico").value,
+                porto_destinazione: document.getElementById("porto_destinazione").value,
+                tipologia_merce: document.getElementById("tipologia_merce").value,
+                peso: parseFloat(document.getElementById("peso").value),
+                id_fornitore: parseInt(document.getElementById("id_fornitore").value),
+                id_viaggio: parseInt(document.getElementById("id_viaggio").value),
+                giorni_franchigia: parseInt(document.getElementById("giorni_franchigia").value),
+                tariffa_oltre_franchigia: parseFloat(document.getElementById("tariffa_oltre_franchigia").value),
+                id_cliente: parseInt(document.getElementById("id_cliente").value)
+            };
+
+            try {
+                const response = await fetch("http://localhost:8080/polizze/inserisciPolizza", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(polizza)
+                });
+
+                if (response.ok) {
+                    const msg = await response.text();
+                    alert(msg);
+                    document.getElementById("formPolizza").reset();
+                } else {
+                    alert("Errore durante l'inserimento della polizza");
+                }
+            } catch (error) {
+                console.error("Errore fetch inserimento:", error);
+                alert("Errore nella comunicazione col server");
+            }
+        }
+
+        window.onload = () => {
+            caricaPorti();
+            document.getElementById("formPolizza").addEventListener("submit", submitPolizza);
+        };
+    </script>
+</head>
+<body class="container py-4">
+    <h2>Aggiungi Nuova Polizza</h2>
+    <form id="formPolizza">
+        <div class="mb-3">
+            <label for="porto_carico" class="form-label">Porto di Carico</label>
+            <select id="porto_carico" class="form-select" required>
+                <option value="" disabled selected>Seleziona porto di carico</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="porto_destinazione" class="form-label">Porto di Destinazione</label>
+            <select id="porto_destinazione" class="form-select" required>
+                <option value="" disabled selected>Seleziona porto di destinazione</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="tipologia_merce" class="form-label">Tipologia Merce</label>
+            <input type="text" id="tipologia_merce" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="peso" class="form-label">Peso (kg)</label>
+            <input type="number" step="0.01" id="peso" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="id_fornitore" class="form-label">ID Fornitore</label>
+            <input type="number" id="id_fornitore" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="id_viaggio" class="form-label">ID Viaggio</label>
+            <input type="number" id="id_viaggio" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="giorni_franchigia" class="form-label">Giorni Franchigia</label>
+            <input type="number" id="giorni_franchigia" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="tariffa_oltre_franchigia" class="form-label">Tariffa Oltre Franchigia</label>
+            <input type="number" step="0.01" id="tariffa_oltre_franchigia" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="id_cliente" class="form-label">ID Cliente</label>
+            <input type="number" id="id_cliente" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Aggiungi Polizza</button>
+    </form>
+
+    <br>
+    <a href="../admin.html" class="btn btn-secondary">Torna alla Dashboard</a>
+</body>
+</html>

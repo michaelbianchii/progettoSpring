@@ -1,6 +1,9 @@
 package progetto.terminal.marittimo.spedizioni.dao;
 
+import progetto.terminal.marittimo.spedizioni.database.DbConnection;
 import progetto.terminal.marittimo.spedizioni.model.BuonoConsegna;
+import progetto.terminal.marittimo.spedizioni.model.Nave;
+
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -14,44 +17,51 @@ import java.util.List;
 @Repository
 public class BuonoConsegnaDao {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/spedizioni";
-    private static final String USER = "localhost";
-    private static final String PASSWORD = "";
+   public List<BuonoConsegna> getBuoniDisponibiliByAutista(int idAutista) {
+    List<BuonoConsegna> lista = new ArrayList<>();
+    try (Connection conn = DriverManager.getConnection(DbConnection.URL, DbConnection.USER, DbConnection.PASSWORD)) {
+        
+        String sql = "SELECT * FROM buono_di_consegna WHERE id_autista = ?";
 
-    public List<BuonoConsegna> getBuoniByPolizzaId(int polizzaId) {
-        List<BuonoConsegna> buoni = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String sql = "SELECT * FROM buono_consegna WHERE polizza_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, polizzaId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                BuonoConsegna buono = new BuonoConsegna(
-                    rs.getInt("id"),
-                    rs.getInt("polizza_id"),
-                    rs.getDouble("peso"),
-                    rs.getString("cliente")
-                );
-                buoni.add(buono);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, idAutista);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            BuonoConsegna b = new BuonoConsegna(
+                rs.getInt("id"),
+                rs.getInt("id_polizza"),
+                rs.getInt("id_cliente"),
+                rs.getString("nome_nave"),
+                rs.getDouble("peso"),
+                rs.getInt("id_autista")
+            );
+            lista.add(b);
         }
-        return buoni;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return lista;
+}
 
-    public String inserisciBuonoConsegna(int polizzaId, double peso, String cliente) {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String sql = "INSERT INTO buono_consegna (polizza_id, peso, cliente) VALUES (?, ?, ?)";
+
+    // Puoi implementare questo se ti serve in futuro
+    public String addBuonoConsegna(BuonoConsegna b) {
+        try (Connection conn = DriverManager.getConnection(DbConnection.URL, DbConnection.USER, DbConnection.PASSWORD)) {
+            String sql = "INSERT INTO buono_di_consegna (id_polizza, id_cliente, nome_nave, peso, id_autista) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, polizzaId);
-            stmt.setDouble(2, peso);
-            stmt.setString(3, cliente);
-            stmt.executeUpdate();
-            return "ok";
+            stmt.setInt(1, b.getId_polizza());
+            stmt.setInt(2, b.getId_cliente());
+            stmt.setString(3, b.getNome_nave());
+            stmt.setDouble(4, b.getPeso());
+            stmt.setInt(5, b.getId_autista());
+
+            int rows = stmt.executeUpdate();
+            return rows > 0 ? "{\"esito\":\"ok\"}" : "{\"esito\":\"errore inserimento\"}";
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return "errore";
+            return "{\"esito\":\"errore connessione\"}";
         }
     }
 }

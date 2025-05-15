@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Aggiungi Viaggio</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        async function getPorti() {
+            try {
+                const response = await fetch("http://localhost:8080/porti/getPorti");
+                return await response.json();
+            } catch (error) {
+                console.error("Errore nel recupero porti:", error);
+                return [];
+            }
+        }
+
+        async function getNavi() {
+            try {
+                const response = await fetch("http://localhost:8080/navi/getNavi");
+                return await response.json();
+            } catch (error) {
+                console.error("Errore nel recupero navi:", error);
+                return [];
+            }
+        }
+
+        async function caricaSelect() {
+            const porti = await getPorti();
+            const navi = await getNavi();
+
+            const selectPortoPartenza = document.getElementById("portoPartenza");
+            const selectPortoArrivo = document.getElementById("portoArrivo");
+            const selectNave = document.getElementById("nome_nave");
+
+            // Pulizia opzioni esistenti
+            selectPortoPartenza.innerHTML = "";
+            selectPortoArrivo.innerHTML = "";
+            selectNave.innerHTML = "";
+
+            // Riempio porti
+            porti.forEach(p => {
+                const optionP = document.createElement("option");
+                optionP.value = p.nome_porto;
+                optionP.textContent = `${p.nome_porto} (${p.nazione})`;
+                selectPortoPartenza.appendChild(optionP);
+
+                const optionA = document.createElement("option");
+                optionA.value = p.nome_porto;
+                optionA.textContent = `${p.nome_porto} (${p.nazione})`;
+                selectPortoArrivo.appendChild(optionA);
+            });
+
+            // Riempio navi
+            navi.forEach(n => {
+                const optionN = document.createElement("option");
+                optionN.value = n.nome_nave;
+                optionN.textContent = n.nome_nave;
+                selectNave.appendChild(optionN);
+            });
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const nome_nave = document.getElementById("nome_nave").value;
+            const portoPartenza = document.getElementById("portoPartenza").value;
+            const dataPartenza = document.getElementById("dataPartenza").value;
+            const portoArrivo = document.getElementById("portoArrivo").value;
+            const dataArrivo = document.getElementById("dataArrivo").value;
+
+            if (!nome_nave || !portoPartenza || !dataPartenza || !portoArrivo || !dataArrivo) {
+                alert("Compila tutti i campi.");
+                return;
+            }
+
+            // Prepariamo la data in formato YYYY-MM-DD (se non già in quel formato)
+            // Le date da input type="date" sono già in formato YYYY-MM-DD quindi va bene.
+
+            // Chiamata GET con parametri query string
+            const url = new URL("http://localhost:8080/viaggi/inserisciViaggio");
+            url.searchParams.append("nome_nave", nome_nave);
+            url.searchParams.append("portoPartenza", portoPartenza);
+            url.searchParams.append("dataPartenza", dataPartenza);
+            url.searchParams.append("portoArrivo", portoArrivo);
+            url.searchParams.append("dataArrivo", dataArrivo);
+
+            try {
+                const response = await fetch(url, { method: "GET" });
+                const text = await response.text();
+
+                alert(text);
+                if (response.ok) {
+                    // Reindirizza o resetta form
+                    window.location.href = "../visualizza/visualizzaViaggi.html";
+                }
+            } catch (error) {
+                console.error("Errore inserimento viaggio:", error);
+                alert("Errore durante l'inserimento del viaggio.");
+            }
+        }
+
+        window.onload = () => {
+            caricaSelect();
+
+            document.getElementById("viaggioForm").addEventListener("submit", submitForm);
+        };
+    </script>
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <h2>Aggiungi Nuovo Viaggio</h2>
+        <form id="viaggioForm" class="mt-4">
+
+            <div class="mb-3">
+                <label for="nome_nave" class="form-label">Nave</label>
+                <select id="nome_nave" class="form-select" required>
+                    <option value="" disabled selected>Seleziona una nave</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="portoPartenza" class="form-label">Porto di Partenza</label>
+                <select id="portoPartenza" class="form-select" required>
+                    <option value="" disabled selected>Seleziona porto di partenza</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="dataPartenza" class="form-label">Data di Partenza</label>
+                <input type="date" id="dataPartenza" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="portoArrivo" class="form-label">Porto di Arrivo</label>
+                <select id="portoArrivo" class="form-select" required>
+                    <option value="" disabled selected>Seleziona porto di arrivo</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="dataArrivo" class="form-label">Data di Arrivo</label>
+                <input type="date" id="dataArrivo" class="form-control" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Aggiungi Viaggio</button>
+            <a href="../admin.html" class="btn btn-secondary ms-2">Annulla</a>
+        </form>
+    </div>
+</body>
+</html>
+

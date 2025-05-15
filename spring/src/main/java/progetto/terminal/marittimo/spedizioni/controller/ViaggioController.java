@@ -5,25 +5,28 @@ import progetto.terminal.marittimo.spedizioni.model.Viaggio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
+import java.sql.Date;
 
 @RestController
-@RequestMapping("/api/viaggi")
+@RequestMapping("/viaggi")
 public class ViaggioController {
 
     @Autowired
     private ViaggioDao viaggioDao;
 
-    @GetMapping("/nave/{naveId}")
-    public List<Viaggio> getViaggiByNaveId(@PathVariable int naveId) {
-        return viaggioDao.getViaggiByNaveId(naveId);
+    // http://localhost:8080/viaggi/getAll
+    @GetMapping("/getAll")
+    public List<Viaggio> getAllViaggi() {
+        return viaggioDao.getAllViaggi();
     }
 
-    @PostMapping
-    public String inserisciViaggio(@RequestParam int naveId, @RequestParam String portoPartenza,
-                                   @RequestParam Date dataPartenza, @RequestParam String portoArrivo,
-                                   @RequestParam Date dataArrivo) {
-        return viaggioDao.inserisciViaggio(naveId, portoPartenza, dataPartenza, portoArrivo, dataArrivo);
+    @GetMapping("/inserisciViaggio")
+    public String inserisciViaggio(@RequestParam String nome_nave, @RequestParam String portoPartenza,
+                                @RequestParam Date dataPartenza, @RequestParam String portoArrivo,
+                                @RequestParam Date dataArrivo) {
+        boolean success = viaggioDao.inserisciViaggio(nome_nave, portoPartenza, dataPartenza, portoArrivo, dataArrivo);
+        return success ? "Inserimento riuscito" : "Errore inserimento";
     }
+
 }

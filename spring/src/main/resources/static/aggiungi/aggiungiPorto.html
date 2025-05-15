@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/function.js"></script>
+    <script src="../js/classes/Utente.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <script>
+        async function inserisciPorto() {
+            let nome_porto = document.getElementById("nome_porto").value;
+            let nazione = document.getElementById("nazione").value;
+            let linea = document.getElementById("linea").value;
+            
+            let risposta = await addPorto(nome_porto, nazione, linea);
+
+            if(risposta["esito"] === "ok") {
+                alert("aggiunta porto fatta con successo");
+                window.location.href = "../visualizza/visualizzaPorti.html";
+            } else {
+                alert("aggiunta fallita");
+            }
+        }
+    </script>
+</head>
+<body class="bg-light">
+    
+    <h2 class="mb-0">AGGIUNGI PORTO</h2>
+    <div class="mb-3">
+        <label for="nome_porto" class="form-label">nome porto</label>
+        <input type="text" class="form-control" id="nome_porto" name="nome_porto" required>
+    </div>
+    <div class="mb-3">
+        <label for="nazione" class="form-label">nazionalità</label>
+        <input type="text" class="form-control" id="nazione" name="nazione" required>
+    </div>
+    <div class="mb-3">
+        <label for="linea" class="form-label">linea</label>
+        <input type="text" class="form-control" id="linea" name="linea" required>
+    </div>
+    <button onclick="inserisciPorto()" class="btn btn-primary w-100">Aggiungi</button>
+
+    <div class="mb-3">
+        <a href="../visualizza/visualizzaPorti.html">indietro</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Cliente - Visualizzazione Polizze</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        async function getPolizzeDisponibili() {
+            let utente = JSON.parse(localStorage.getItem("utente"));
+            if (!utente || !utente.id) {
+                alert("Utente non autenticato.");
+                window.location.href = "login.html";
+                return [];
+            }
+
+            let id = utente.id;
+            let url = "http://localhost:8080/polizze/getPolizzaByCliente?clienteId=" + id;
+
+            try {
+                let response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.log("Errore nella fetch:", error);
+                return [];
+            }
+        }
+
+        async function caricaPolizze() {
+            const polizze = await getPolizzeDisponibili();
+            const container = document.getElementById("listaPolizze");
+            container.innerHTML = "";
+
+            if (polizze.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">Nessuna polizza disponibile.</div>`;
+                return;
+            }
+
+            polizze.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "card mb-2 p-3 shadow-sm d-flex justify-content-between align-items-center";
+
+                div.textContent = `Polizza ID: ${p.id} | Porto Carico: ${p.porto_carico} | Porto Destinazione: ${p.porto_destinazione} | Tipologia: ${p.tipologia_merce} | Peso: ${p.peso} kg`;
+
+                container.appendChild(div);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaPolizze()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Polizze Disponibili</h1>
+
+        <h2 class="mb-3">Lista Polizze</h2>
+        <div id="listaPolizze" class="mb-4"></div>
+
+        <a href="../cliente.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>
+

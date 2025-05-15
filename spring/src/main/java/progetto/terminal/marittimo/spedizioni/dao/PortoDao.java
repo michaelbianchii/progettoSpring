@@ -2,6 +2,7 @@ package progetto.terminal.marittimo.spedizioni.dao;
 
 import progetto.terminal.marittimo.spedizioni.database.DbConnection;
 import progetto.terminal.marittimo.spedizioni.model.Nave;
+import progetto.terminal.marittimo.spedizioni.model.Porto;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,19 +11,21 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class NaveDao {
+public class PortoDao {
 
     // metodo per ottenere tutte le navi
-    public List<Nave> getAllNavi() {
-        List<Nave> lista = new ArrayList<>();
+    public List<Porto> getPorti() {
+        List<Porto> lista = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(DbConnection.URL, DbConnection.USER, DbConnection.PASSWORD)) {
-            String sql = "SELECT * FROM nave";
+            String sql = "SELECT * FROM porto";
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String nome = rs.getString("nome_nave");
-                Nave nave = new Nave(nome);
-                lista.add(nave);
+                String nome = rs.getString("nome_porto");
+                String nazione = rs.getString("nazione");
+                String linea = rs.getString("linea");
+                Porto p = new Porto(nome, nazione, linea);
+                lista.add(p);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,11 +34,14 @@ public class NaveDao {
     }
 
     // metodo per inserire una nuova nave
-    public String addNave(String nome_nave) {
+    public String addPorto(String nome_porto, String nazione, String linea) {
         try (Connection conn = DriverManager.getConnection(DbConnection.URL, DbConnection.USER, DbConnection.PASSWORD)) {
-            String sql = "INSERT INTO nave (nome_nave) VALUES (?)";
+            String sql = "INSERT INTO porto (nome_porto, nazione, linea) VALUES (?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, nome_nave);
+            stmt.setString(1, nome_porto);
+            stmt.setString(2, nazione);
+            stmt.setString(3, linea);
+
            int rowsAffected = stmt.executeUpdate();
             
             if (rowsAffected > 0) {
@@ -49,16 +55,22 @@ public class NaveDao {
         }
     }
 
-     public boolean deleteNave(String nomeNave) {
-        String sql = "DELETE FROM nave WHERE nome_nave = ?";
-         try (Connection conn = DriverManager.getConnection(DbConnection.URL, DbConnection.USER, DbConnection.PASSWORD)) {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, nomeNave);
-            int affectedRows = ps.executeUpdate();
-            return affectedRows > 0;
+    public String eliminaPorto(String nome_porto) {
+        try (Connection conn = DriverManager.getConnection(DbConnection.URL, DbConnection.USER, DbConnection.PASSWORD)) {
+            String sql = "DELETE FROM porto WHERE nome_porto = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nome_porto);
+            int rowsAffected = stmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                return "{\"esito\":\"ok\"}";
+            } else {
+                return "{\"esito\":\"errore eliminazione\"}";
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return "{\"esito\":\"errore connessione\"}";
         }
     }
+    
 }

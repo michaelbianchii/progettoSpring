@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Fornitore - Le Mie Polizze</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        async function getPolizzeFornitore() {
+            const utente = JSON.parse(localStorage.getItem("utente"));
+            if (!utente || utente.ruolo !== "fornitore") {
+                alert("Accesso non autorizzato");
+                window.location.href = "login.html";
+                return [];
+            }
+
+            const url = "http://localhost:8080/polizze/getPolizzaByFornitore?id=" + utente.id;
+            try {
+                const response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.log("Errore nella fetch:", error);
+                return [];
+            }
+        }
+
+        async function caricaPolizze() {
+            const polizze = await getPolizzeFornitore();
+            const container = document.getElementById("listaPolizze");
+            container.innerHTML = "";
+
+            if (polizze.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">Nessuna polizza trovata.</div>`;
+                return;
+            }
+
+            polizze.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "card mb-2 p-3 shadow-sm d-flex justify-content-between align-items-center";
+
+                const info = document.createElement("span");
+                info.textContent = `Polizza ID: ${p.id}, Merce: ${p.tipologia_merce}, Peso: ${p.peso} kg, Porto Carico: ${p.porto_carico}, Porto Destinazione: ${p.porto_destinazione}`;
+
+                div.appendChild(info);
+                container.appendChild(div);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaPolizze()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Le Mie Polizze di Carico</h1>
+
+        <h2 class="mb-3">Storico Ordini</h2>
+        <div id="listaPolizze" class="mb-4"></div>
+
+        <a href="../fornitore.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>

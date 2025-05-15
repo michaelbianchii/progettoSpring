@@ -3,6 +3,8 @@ package progetto.terminal.marittimo.spedizioni.controller;
 import progetto.terminal.marittimo.spedizioni.dao.PolizzaDao;
 import progetto.terminal.marittimo.spedizioni.model.Polizza;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +23,29 @@ public class PolizzaController {
         return polizzaDao.getPolizzeByClienteId(clienteId);
     }
 
-    /*@PostMapping
-    public String inserisciPolizza(@RequestParam int viaggioId, @RequestParam String portoCarico,
-                                   @RequestParam String portoDestinazione, @RequestParam String tipologiaMerce,
-                                   @RequestParam double peso, @RequestParam String fornitore) {
-        return polizzaDao.inserisciPolizza(viaggioId, portoCarico, portoDestinazione, tipologiaMerce, peso, fornitore);
-    }*/
+    // http://localhost:8080/polizze/getPolizzaByFornitore?id=2
+    @GetMapping("/getPolizzaByFornitore")
+    @ResponseBody
+    public List<Polizza> getPolizzaByFornitore(@RequestParam int id) {
+        return polizzaDao.getPolizzaByFornitore(id);
+    }
+
+     // http://localhost:8080/polizze/getAllPolizze
+    @GetMapping("/getAllPolizze")
+    @ResponseBody
+    public List<Polizza> getAllPolizze() {
+        return polizzaDao.getAllPolizze();
+    }
+
+   
+    // Endpoint per inserire una nuova polizza tramite POST con JSON nel body
+    @PostMapping("/inserisciPolizza")
+    public ResponseEntity<String> inserisciPolizza(@RequestBody Polizza polizza) {
+        boolean success = polizzaDao.inserisciPolizza(polizza);
+        if (success) {
+            return ResponseEntity.ok("Inserimento riuscito");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore inserimento");
+        }
+    }
 }

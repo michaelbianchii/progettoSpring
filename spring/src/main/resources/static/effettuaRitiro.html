@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Effettua Ritiro</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <script>
+        let utente = null;
+        let targaCamion = "";
+
+        async function getBuoniPerAutista() {
+            let url = "http://localhost:8080/buoni/getBuoniDisponibiliByAutista?id=" + utente.id;
+            try {
+                const response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.error("Errore nel recupero buoni:", error);
+                return [];
+            }
+        }
+
+        async function getTargaCamion() {
+            let utente = JSON.parse(localStorage.getItem("utente"));
+            let id = utente.id;
+            let url = "http://localhost:8080/camion/getTargaByAutistaId?id=" + id;
+            try {
+                const response = await fetch(url);
+                const data = await response.text();
+                return data || "";
+            } catch (error) {
+                console.error("Errore nella targa:", error);
+                return "";
+            }
+        }
+
+        async function caricaDati() {
+            utente = JSON.parse(localStorage.getItem("utente"));
+            if (!utente || utente.ruolo !== "autista") {
+                alert("Accesso non autorizzato");
+                window.location.href = "login.html";
+                return;
+            }
+
+            targaCamion = await getTargaCamion();
+            document.getElementById("targa").textContent = targaCamion;
+            document.getElementById("conducente").textContent = utente.username;
+
+            const buoni = await getBuoniPerAutista();
+            const select = document.getElementById("buonoSelect");
+            select.innerHTML = "";
+
+            if (buoni.length === 0) {
+                const option = document.createElement("option");
+                option.textContent = "Nessun buono assegnato.";
+                option.disabled = true;
+                select.appendChild(option);
+                return;
+            }
+
+            buoni.forEach(b => {
+                const option = document.createElement("option");
+                option.value = b.id;
+                option.textContent = `Buono ${b.id} - (${b.peso} kg)`;
+                select.appendChild(option);
+            });
+        }
+
+        async function effettuaRitiro() {
+            const id_polizza = document.getElementById("buonoSelect").value;
+            const peso = document.getElementById("peso").value;
+            const conducente = utente.username;
+
+            if (!peso || !id_polizza) {
+                alert("Compila tutti i campi.");
+                return;
+            }
+
+            const ritiro = {
+                id_autista: utente.id,
+                id_polizza: id_polizza,
+                peso_ritirato: peso,
+                camion_utilizzato: targaCamion,
+                conducente: conducente
+            };
+
+            try {
+                let response = await fetch("http://localhost:8080/ritiri/add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(ritiro)
+                });
+
+                if (response.ok) {
+                    alert("Ritiro effettuato con successo!");
+                    window.location.href = "storicoRitiri.html";
+                } else {
+                    alert("Errore durante il ritiro.");
+                }
+            } catch (error) {
+                console.error("Errore fetch ritiro:", error);
+            }
+        }
+    </script>
+</head>
+<body onload="caricaDati()" class="bg-light text-dark">
+
+    <div class="container py-4">
+        <h2 class="mb-4">Effettua un Ritiro</h2>
+
+        <div class="mb-3">
+            <label for="buonoSelect" class="form-label">Buono assegnato:</label>
+            <select id="buonoSelect" class="form-select" aria-label="Seleziona Buono"></select>
+        </div>
+
+        <div class="mb-3">
+            <label for="peso" class="form-label">Peso da ritirare (kg):</label>
+            <input type="number" id="peso" class="form-control" required min="0" />
+        </div>
+
+        <div class="mb-3">
+            <strong>Targa Camion:</strong> <span id="targa">...</span>
+        </div>
+
+        <div class="mb-4">
+            <strong>Conducente:</strong> <span id="conducente">...</span>
+        </div>
+
+        <button class="btn btn-primary" onclick="effettuaRitiro()">Conferma Ritiro</button>
+        <br /><br />
+        <a href="autista.html" class="btn btn-outline-secondary">Indietro</a>
+    </div>
+
+</body>
+</html>

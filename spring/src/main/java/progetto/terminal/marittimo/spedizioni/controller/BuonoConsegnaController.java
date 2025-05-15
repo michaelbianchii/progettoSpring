@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 import progetto.terminal.marittimo.spedizioni.dao.BuonoConsegnaDao;
 import progetto.terminal.marittimo.spedizioni.model.BuonoConsegna;
+import progetto.terminal.marittimo.spedizioni.model.Nave;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,24 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/buoni")
+@RequestMapping("/buoni")
 public class BuonoConsegnaController {
 
     @Autowired
     private BuonoConsegnaDao buonoConsegnaDao;
 
-    
-    //http://localhost:8080/api/buoni/polizza/{polizzaId}
-    @GetMapping("/polizza/{polizzaId}")
-    @ResponseBody
-    public List<BuonoConsegna> getBuoniByPolizzaId(@PathVariable int polizzaId) {
-        return buonoConsegnaDao.getBuoniByPolizzaId(polizzaId);
+    // GET http://localhost:8080/buoni/getBuoniDisponibiliByAutista?id=10
+    @GetMapping("/getBuoniDisponibiliByAutista")
+    public List<BuonoConsegna> getBuoniDisponibiliByAutista(@RequestParam int id) {
+        return buonoConsegnaDao.getBuoniDisponibiliByAutista(id);
     }
 
-    @PostMapping
-    @ResponseBody
-    public String inserisciBuonoConsegna(@RequestParam int polizzaId, @RequestParam double peso,
-                                         @RequestParam String cliente) {
-        return buonoConsegnaDao.inserisciBuonoConsegna(polizzaId, peso, cliente);
+    // POST opzionale per inserire un nuovo buono
+    @PostMapping("/add")
+    public String addBuono(@RequestBody BuonoConsegna b) {
+        return buonoConsegnaDao.addBuonoConsegna(b);
     }
 }

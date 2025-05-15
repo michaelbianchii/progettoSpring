@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Gestione Navi</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+    async function getNavi() {
+        let url = "http://localhost:8080/navi/getNavi";
+        try {
+            let response = await fetch(url);
+            return await response.json();
+        } catch (error) {
+            console.log("Errore nella fetch:", error);
+            return [];
+        }
+    }
+
+    async function eliminaNave(nomeNave) {
+        if (!confirm(`Sei sicuro di voler eliminare la nave "${nomeNave}"?`)) return;
+        let url = `http://localhost:8080/api/navi/removeNave?nome_nave=${encodeURIComponent(nomeNave)}`;
+        try {
+            let response = await fetch(url, { method: 'DELETE' }); // uso DELETE
+            if (response.ok) {
+                alert("Nave eliminata con successo");
+                caricaNavi();
+            } else {
+                const errText = await response.text();
+                alert("Errore nell'eliminazione: " + errText);
+            }
+        } catch (error) {
+            alert("Errore di comunicazione con il server");
+            console.log(error);
+        }
+    }
+
+    async function caricaNavi() {
+        const navi = await getNavi();
+        const container = document.getElementById("listaNavi");
+        container.innerHTML = ""; // pulisce
+
+        if (navi.length === 0) {
+            container.innerHTML = `<div class="alert alert-warning">Nessuna nave trovata.</div>`;
+            return;
+        }
+
+        navi.forEach(u => {
+            const div = document.createElement("div");
+            div.className = "card mb-2 p-2 shadow-sm d-flex justify-content-between align-items-center";
+
+            const span = document.createElement("span");
+            span.textContent = `Nome nave: ${u.nome_nave}`;
+
+            const btn = document.createElement("button");
+            btn.className = "btn btn-danger btn-sm";
+            btn.textContent = "Elimina";
+            btn.onclick = () => eliminaNave(u.nome_nave);
+
+            div.appendChild(span);
+            div.appendChild(btn);
+            container.appendChild(div);
+        });
+    }
+    </script>
+</head>
+<body onload="caricaNavi()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Gestione NAVI - Admin</h1>
+
+        <h2 class="mb-3">Lista NAVI</h2>
+        <div id="listaNavi" class="mb-4"></div>
+
+        <h2 class="mb-3">Aggiungi Nave</h2>
+        <a href="../aggiungi/aggiungiNave.html" class="btn btn-primary mb-4">Aggiungi una nuova nave</a>
+
+        <br>  
+        <a href="../admin.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Autista - Visualizza Buoni di Consegna</title>
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <script>
+        async function getBuoniPerAutista() {
+            let utente = JSON.parse(localStorage.getItem("utente"));
+            if (!utente || utente.ruolo !== "autista") {
+                alert("Accesso non autorizzato");
+                window.location.href = "login.html";
+                return [];
+            }
+
+            let id = utente.id;
+            let url = "http://localhost:8080/buoni/getBuoniDisponibiliByAutista?id=" + id;
+
+            try {
+                let response = await fetch(url);
+                return await response.json();
+            } catch (error) {
+                console.log("Errore nella fetch:", error);
+                return [];
+            }
+        }
+
+        async function caricaBuoni() {
+            const buoni = await getBuoniPerAutista();
+            const container = document.getElementById("listaBuoni");
+            container.innerHTML = "";
+
+            if (buoni.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">Nessun buono di consegna assegnato.</div>`;
+                return;
+            }
+
+            buoni.forEach(b => {
+                const div = document.createElement("div");
+                div.className = "card mb-2 p-3 shadow-sm d-flex justify-content-between align-items-center";
+
+                div.textContent = `Buono ID: ${b.id}, Polizza: ${b.id_polizza}, Peso: ${b.peso} kg, Nave: ${b.nome_nave}`;
+
+                container.appendChild(div);
+            });
+        }
+    </script>
+</head>
+<body onload="caricaBuoni()" class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4">Buoni di Consegna - Autista</h1>
+
+        <h2 class="mb-3">Lista Buoni Assegnati</h2>
+        <div id="listaBuoni" class="mb-4"></div>
+
+        <a href="../autista.html" class="btn btn-secondary">Indietro</a>
+    </div>
+</body>
+</html>
+

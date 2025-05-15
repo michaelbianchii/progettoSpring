@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Benvenuto Autista</title>
+    <script src="js/function.js"></script>
+    <script src="js/classes/Utente.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+</head>
+<body onload="controllaUtente('autista')" class="bg-light text-dark">
+
+    <div class="container py-4">
+        <h1 class="mb-4">Benvenuto Autista</h1>
+        <h2 class="mb-3">Pagine di VISUALIZZAZIONE:</h2>
+
+        <div class="d-flex flex-column gap-2 mb-4">
+            <a href="visualizza/visualizzaBuoniConsegna.html" class="btn btn-primary">Visualizza Buoni di Consegna Assegnati</a>
+            <a href="effettuaRitiro.html" class="btn btn-success">Effettua il Ritiro</a>
+            <a href="visualizza/visualizzaStoricoRitiriAutista.html" class="btn btn-info text-white">Visualizza Storico Ritiri</a>
+        </div>
+
+        <a href="logout.html" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+</body>
+</html>

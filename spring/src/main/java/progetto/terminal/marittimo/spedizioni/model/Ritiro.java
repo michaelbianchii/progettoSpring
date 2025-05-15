@@ -2,24 +2,22 @@ package progetto.terminal.marittimo.spedizioni.model;
 
 import java.util.Date;
 
-//da aggiungere in db
 public class Ritiro {
     private int id;
-    private String cliente;
-    private double peso;
-    private String targaCamion;
-    private String nomeAutista;
-    private Date dataRitiro;
+    private int id_utente;
+    private double peso_ritirato;
+    private String camion_utilizzato;
+    private String conducente;
+    private Date data_ritiro;
 
-    public Ritiro(int id, String cliente, double peso, String targaCamion, String nomeAutista, Date dataRitiro) {
+    public Ritiro(int id, int id_utente, double peso_ritirato, String camion_utilizzato, String conducente, Date data_ritiro) {
         this.id = id;
-        this.cliente = cliente;
-        this.peso = peso;
-        this.targaCamion = targaCamion;
-        this.nomeAutista = nomeAutista;
-        this.dataRitiro = dataRitiro;
+        this.id_utente = id_utente;
+        this.peso_ritirato = peso_ritirato;
+        this.camion_utilizzato = camion_utilizzato;
+        this.conducente = conducente;
+        this.data_ritiro = data_ritiro;
     }
-
     public int getId() {
         return id;
     }
@@ -27,44 +25,37 @@ public class Ritiro {
     public void setId(int id) {
         this.id = id;
     }
-
-    public String getCliente() {
-        return cliente;
+    public int getId_utente() {
+        return id_utente;
+    }
+    public void setId_utente(int id_utente) {
+        this.id_utente = id_utente;
+    }
+    public double getPeso_ritirato() {
+        return peso_ritirato;
+    }
+    public void setPeso_ritirato(double peso_ritirato) {
+        this.peso_ritirato = peso_ritirato;
+    }
+    public String getCamion_utilizzato() {
+        return camion_utilizzato;
+    }
+    public void setCamion_utilizzato(String camion_utilizzato) {
+        this.camion_utilizzato = camion_utilizzato;
+    }
+    public String getConducente() {
+        return conducente;
+    }
+    public void setConducente(String conducente) {
+        this.conducente = conducente;
+    }
+    public Date getData_ritiro() {
+        return data_ritiro;
+    }
+    public void setData_ritiro(Date data_ritiro) {
+        this.data_ritiro = data_ritiro;
     }
 
-    public void setCliente(String cliente) {
-        this.cliente = cliente;
-    }
 
-    public double getPeso() {
-        return peso;
-    }
-
-    public void setPeso(double peso) {
-        this.peso = peso;
-    }
-
-    public String getTargaCamion() {
-        return targaCamion;
-    }
-
-    public void setTargaCamion(String targaCamion) {
-        this.targaCamion = targaCamion;
-    }
-
-    public String getNomeAutista() {
-        return nomeAutista;
-    }
-
-    public void setNomeAutista(String nomeAutista) {
-        this.nomeAutista = nomeAutista;
-    }
-
-    public Date getDataRitiro() {
-        return dataRitiro;
-    }
-
-    public void setDataRitiro(Date dataRitiro) {
-        this.dataRitiro = dataRitiro;
-    }
+   
 }
